@@ -1,0 +1,82 @@
+version: '3.7'
+
+services:
+  wireguards1:
+    image: linuxserver/wireguard
+    container_name: wireguards1
+    restart: unless-stopped
+    networks:
+      backbone:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - './confs1:/config'
+      - '/lib/modules:/lib/modules:ro'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - PEERS=1
+      - ALLOWED_IPS=0.0.0.0/0
+      - INTERNAL_SUBNET=10.10.1.0
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    ports:
+      - 51820:51820/udp
+  wireguards2:
+    image: linuxserver/wireguard
+    container_name: wireguards2
+    restart: unless-stopped
+    networks:
+      backbone:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - './confs2:/config'
+      - '/lib/modules:/lib/modules:ro'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - PEERS=1
+      - ALLOWED_IPS=0.0.0.0/0
+      - INTERNAL_SUBNET=10.10.2.0
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    ports:
+      - 51821:51820/udp
+  wireguards3:
+    image: linuxserver/wireguard
+    container_name: wireguards3
+    restart: unless-stopped
+    networks:
+      backbone:
+        ipv4_address: 172.20.0.4
+    volumes:
+      - './confs3:/config'
+      - '/lib/modules:/lib/modules:ro'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - PEERS=1
+      - ALLOWED_IPS=0.0.0.0/0
+      - INTERNAL_SUBNET=10.10.3.0
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    ports:
+      - 51822:51820/udp
+networks:
+  backbone:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.0/16
+        gateway: 172.20.0.1
